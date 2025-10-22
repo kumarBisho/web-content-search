@@ -1,0 +1,36 @@
+# Node
+node_modules/
+dist/
+.env
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+.env
+.venv/
+venv/
+
+# VSCode
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Build
+frontend/build/
+frontend/dist/
+backend/.mypy_cache/
+backend/.pytest_cache/
+
+# Others
+*.bak
+*.swp
+.idea/

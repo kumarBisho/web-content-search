@@ -1,0 +1,5 @@
+# config.py
+COLLECTION_NAME = "web_chunks"
+MAX_CHUNK_LEN = 9000
+EMBEDDING_DIM = 384
+MODEL_NAME = "all-MiniLM-L6-v2"

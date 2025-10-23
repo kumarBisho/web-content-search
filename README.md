@@ -75,6 +75,17 @@ npm run dev
 
 ---
 
+## User Interface
+
+### Input Form
+![Input UI](assets/input_ui.png)
+
+### Output Example
+![Output UI Part 1](assets/output_ui_part1.png)
+![Output UI Part 2](assets/output_ui_part2.png)
+
+---
+
 ## Usage
 1. Start Milvus (vector DB) and backend server.
 2. Start frontend dev server.

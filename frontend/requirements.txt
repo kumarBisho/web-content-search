@@ -1,0 +1,5 @@
+react
+vite
+typescript
+@vitejs/plugin-react
+axios

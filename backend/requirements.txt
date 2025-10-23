@@ -2,3 +2,8 @@ fastapi
 uvicorn 
 requests 
 beautifulsoup4
+nltk
+sentence-transformers
+faiss-cpu
+pymilvus
+python-dotenv

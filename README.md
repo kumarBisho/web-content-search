@@ -55,10 +55,14 @@ uvicorn main:app --reload
 
 ---
 
+
 ### 3. Frontend Setup
 ```sh
 cd ../frontend
+# Install Node.js dependencies
 npm install
+# (Optional) Install Python requirements if using Python scripts in frontend
+pip install -r requirements.txt
 ```
 
 #### Frontend Configuration

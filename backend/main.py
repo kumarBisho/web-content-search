@@ -8,7 +8,7 @@ import nltk
 from config import MODEL_NAME, MAX_CHUNK_LEN
 
 # ======================================================
-# 🌐 FASTAPI INITIALIZATION
+# FASTAPI INITIALIZATION
 # ======================================================
 app = FastAPI(title="Smart HTML Semantic Search (Refactored)")
 
@@ -21,7 +21,7 @@ app.add_middleware(
 )
 
 # ======================================================
-# 🧠 LOAD MODEL
+# LOAD MODEL
 # ======================================================
 nltk.download("punkt", quiet=True)
 model = SentenceTransformer(MODEL_NAME)
@@ -29,22 +29,22 @@ connect_milvus()
 
 
 # ======================================================
-# 🔍 SEARCH ENDPOINT
+# SEARCH ENDPOINT
 # ======================================================
 @app.post("/search")
 def search(req: SearchRequest):
     try:
         base_url = req.url
 
-        # 1️⃣ Create a new Milvus collection for each request
+        # Create a new Milvus collection for each request
         collection = create_new_collection()
 
-        # 2️⃣ Fetch the main page
+        # Fetch the main page
         main_html = fetch_html(base_url)
         if not main_html:
             raise HTTPException(status_code=400, detail="Unable to fetch URL")
 
-        # 3️⃣ Crawl internal links (optional)
+        # Crawl internal links (optional)
         pages = [base_url] + get_internal_links(base_url, main_html)
         
         normalized_pages = []
@@ -57,7 +57,7 @@ def search(req: SearchRequest):
 
         pages = normalized_pages
 
-        # 4️⃣ Clean and chunk text
+        # Clean and chunk text
         all_chunks = []
         for page in pages:
             html = fetch_html(page)
@@ -70,7 +70,7 @@ def search(req: SearchRequest):
         if not all_chunks:
             raise HTTPException(status_code=400, detail="No readable text content found")
 
-        # 5️⃣ Embed and insert data
+        # Embed and insert data
         texts = [c["chunk"] for c in all_chunks]
         urls = [c["url"] for c in all_chunks]
         embeddings = model.encode(texts, normalize_embeddings=True).tolist()  # ✅ normalize for cosine
@@ -78,7 +78,7 @@ def search(req: SearchRequest):
         collection.insert([texts, embeddings, urls])
         collection.flush()
 
-        # 6️⃣ Create vector index (COSINE)
+        # Create vector index (COSINE)
         collection.create_index(
             field_name="embedding",
             index_params={
@@ -89,10 +89,10 @@ def search(req: SearchRequest):
         )
         print("✅ Cosine index created successfully.")
 
-        # 7️⃣ Load into memory
+        #  into memory
         collection.load()
 
-        # 8️⃣ Perform semantic search
+        # Perform semantic search
         query_vec = model.encode([req.query], normalize_embeddings=True).tolist()
         search_params = {"metric_type": "COSINE", "params": {"nprobe": 10}}
 
@@ -104,7 +104,7 @@ def search(req: SearchRequest):
             output_fields=["chunk_text", "url"],
         )
 
-        # 9️⃣ Format output with positive match scores
+        # Format output with positive match scores
         formatted = []
         for hits in results:
             for hit in hits:

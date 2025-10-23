@@ -34,3 +34,8 @@ backend/.pytest_cache/
 *.bak
 *.swp
 .idea/
+
+# Ignore xl.meta files
+xl.meta
+*.xl.meta
+volumes/

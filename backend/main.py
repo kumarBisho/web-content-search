@@ -2,7 +2,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from bs4 import BeautifulSoup
-from urllib.parse import urljoin, urlparse
+from urllib.parse import urljoin, urlparse, urlunparse
 import requests
 import nltk
 from sentence_transformers import SentenceTransformer
@@ -70,6 +70,14 @@ def create_new_collection():
 # ======================================================
 # 🧹 UTILITIES
 # ======================================================
+
+def normalize_url(url: str) -> str:
+    """Normalize URL by removing fragments, query params, and trailing slashes."""
+    parsed = urlparse(url)
+    # Keep scheme and netloc always
+    normalized_path = parsed.path.rstrip("/") or "/"
+    return urlunparse((parsed.scheme, parsed.netloc, normalized_path, "", "", ""))
+
 def clean_html(html: str) -> str:
     soup = BeautifulSoup(html, "html.parser")
     for tag in soup(["script", "style", "noscript", "meta", "svg", "img"]):
@@ -140,6 +148,16 @@ def search(req: SearchRequest):
 
         # 3️⃣ Crawl internal links (optional)
         pages = [base_url] + get_internal_links(base_url, main_html)
+        
+        normalized_pages = []
+        seen = set()
+        for p in pages:
+            n = normalize_url(p)
+            if n not in seen:
+                seen.add(n)
+                normalized_pages.append(n)
+
+        pages = normalized_pages
 
         # 4️⃣ Clean and chunk text
         all_chunks = []
